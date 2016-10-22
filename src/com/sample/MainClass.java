@@ -36,7 +36,7 @@ public class MainClass {
 //        subscribeList.add("LASS/Test/PM25");
         profile.setSubscribe(subscribeList);
 
-        SubscribeRoutine pm25 = new SubscribeRoutine(profile);
+        Subscriber pm25 = new Subscriber(profile);
         pm25.startSubscribe();
 
         try {

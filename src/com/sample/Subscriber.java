@@ -5,6 +5,11 @@
  */
 package com.sample;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Formatter;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -17,14 +22,14 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  *
  * @author Jeff
  */
-public class SubscribeRoutine {
+public class Subscriber {
     ServerProfile profile;
     MqttClient client;
     MqttConnectOptions connOpts;
     MqttMessage message;
     
     
-    public SubscribeRoutine(ServerProfile profile) {
+    public Subscriber(ServerProfile profile) {
         try {
             this.profile = profile;
             this.client = new MqttClient(profile.getServer(),profile.getClientId());
@@ -36,7 +41,8 @@ public class SubscribeRoutine {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                     System.out.println("From :"+topic);
+                     System.out.print("Receive from :"+topic);
+                     System.out.printf(" at %tF %<tr%n", new Date());
                      System.out.println("\t"+message+"\n");
                 }
 
@@ -50,16 +56,17 @@ public class SubscribeRoutine {
             connOpts.setAutomaticReconnect(true);
             connOpts.setCleanSession(true);
         } catch (MqttException ex) {
-            Logger.getLogger(SubscribeRoutine.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     void startSubscribe(){
         try {
             client.connect(connOpts);
+            System.out.println("Starting Connection");
             client.subscribe(profile.getSubscribe().toArray(new String[0]));
         } catch (MqttException ex) {
-            Logger.getLogger(SubscribeRoutine.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -69,7 +76,7 @@ public class SubscribeRoutine {
             client.disconnect();
             client.close();
         } catch (MqttException ex) {
-            Logger.getLogger(SubscribeRoutine.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
