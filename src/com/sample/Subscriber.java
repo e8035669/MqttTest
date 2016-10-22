@@ -5,15 +5,12 @@
  */
 package com.sample;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Formatter;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -33,7 +30,7 @@ public class Subscriber {
         try {
             this.profile = profile;
             this.client = new MqttClient(profile.getServer(),profile.getClientId());
-            this.client.setCallback(new MqttCallback(){
+            this.client.setCallback(new MqttCallbackExtended(){
                 @Override
                 public void connectionLost(Throwable cause) {
                     System.out.println("Connection lost... will be reconnect automatically soon.");
@@ -50,6 +47,16 @@ public class Subscriber {
                 public void deliveryComplete(IMqttDeliveryToken token) {
                     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
+
+                @Override
+                public void connectComplete(boolean reconnect, String serverURI) {
+                    if(reconnect){
+                        System.out.println("Reconnect Complete. Resume subscribing");
+                        startSubscribe();
+                    }else{
+                        System.out.println("Connection Established");
+                    }
+                }
             
             });
             this.connOpts = new MqttConnectOptions();
@@ -62,13 +69,11 @@ public class Subscriber {
     
     void startSubscribe(){
         try {
-            client.connect(connOpts);
-            System.out.println("Starting Connection");
+            
             client.subscribe(profile.getSubscribe().toArray(new String[0]));
         } catch (MqttException ex) {
             Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     void stopSubscribe(){
         try {
@@ -78,7 +83,14 @@ public class Subscriber {
         } catch (MqttException ex) {
             Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+    }
+
+    void startConnect() {
+        try {
+            client.connect(connOpts);
+            System.out.println("Starting Connection");
+        } catch (MqttException ex) {
+            Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

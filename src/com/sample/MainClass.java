@@ -37,6 +37,7 @@ public class MainClass {
         profile.setSubscribe(subscribeList);
 
         Subscriber pm25 = new Subscriber(profile);
+        pm25.startConnect();
         pm25.startSubscribe();
 
         try {
