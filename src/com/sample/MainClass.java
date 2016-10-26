@@ -34,6 +34,7 @@ public class MainClass {
         subscribeList.add("LASS/Test/PM25/NUK_518-1_inside");
         subscribeList.add("LASS/Test/PM25/NUK_518-1_outside");
         subscribeList.add("LASS/Test/PM25/NUK_IM5F_outside");
+        subscribeList.add("LASS/Test/PM25");
 //        subscribeList.add("LASS/Test/PM25");
         profile.setSubscribe(subscribeList);
         
@@ -49,7 +50,7 @@ public class MainClass {
 
         pm25.stopSubscribe();
         
-        
+        DataStorage.stop();
         
         
         

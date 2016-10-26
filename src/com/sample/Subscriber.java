@@ -24,7 +24,6 @@ public class Subscriber {
     MqttConnectOptions connOpts;
     MqttMessage message;
     
-    
     public Subscriber(ServerProfile profile) {
         try {
             this.profile = profile;
@@ -37,7 +36,7 @@ public class Subscriber {
                 }
 
                 @Override
-                public void messageArrived(String topic, MqttMessage message) throws Exception {
+                public void messageArrived(String topic, MqttMessage message) {
                      System.out.print("Receive from :"+topic);
                      System.out.printf(" at %tF %<tr%n", new Date());
                      System.out.println("\t"+message+"\n");
@@ -66,6 +65,7 @@ public class Subscriber {
         } catch (MqttException ex) {
             Logger.getLogger(Subscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     void startSubscribe(){
