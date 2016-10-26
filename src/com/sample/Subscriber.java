@@ -32,6 +32,7 @@ public class Subscriber {
             this.client.setCallback(new MqttCallbackExtended(){
                 @Override
                 public void connectionLost(Throwable cause) {
+                    cause.printStackTrace();
                     System.out.println("Connection lost... will be reconnect automatically soon.");
                 }
 
@@ -40,6 +41,7 @@ public class Subscriber {
                      System.out.print("Receive from :"+topic);
                      System.out.printf(" at %tF %<tr%n", new Date());
                      System.out.println("\t"+message+"\n");
+                     DataStorage.saveThisMessage(topic, message);
                 }
 
                 @Override
